@@ -10,6 +10,11 @@ const (
 	// Keywords
 	LET      = "LET"
 	FUNCTION = "FUNCTION"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
 
 	// Identifiers
 	ID  = "ID"
@@ -41,8 +46,13 @@ const (
 )
 
 var keywords = map[string]TokenType{
-	"fn":  FUNCTION,
-	"let": LET,
+	"let":    LET,
+	"fn":     FUNCTION,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
+	"true":   TRUE,
+	"false":  FALSE,
 }
 
 func CheckWordType(word string) TokenType {
