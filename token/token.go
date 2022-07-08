@@ -8,8 +8,8 @@ type Token struct {
 
 const (
 	// Keywords
-	LET     = "LET"
-	FUNCION = "FUNCTION"
+	LET      = "LET"
+	FUNCTION = "FUNCTION"
 
 	// Identifiers
 	ID  = "ID"
