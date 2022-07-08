@@ -32,3 +32,15 @@ const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 )
+
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func CheckWordType(word string) TokenType {
+	if tok, kw := keywords[word]; kw {
+		return tok
+	}
+	return ID
+}
