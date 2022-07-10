@@ -1,6 +1,8 @@
 package lexer
 
-import "github.com/minju-kim98/monkey/token"
+import (
+	"github.com/minju-kim98/monkey/token"
+)
 
 type Lexer struct {
 	input        string
@@ -40,13 +42,11 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		if l.getNextChar() == '=' {
-			l.nextChar()
-			tok = token.Token{Type: token.EQ, Literal: "=="}
+		if twoChar, literal := l.twoCharToken(l.ch); twoChar {
+			tok = token.Token{Type: token.EQ, Literal: literal}
 		} else {
-			tok = newToken(token.ASSIGN, l.ch)
+			tok = token.Token{Type: token.ASSIGN, Literal: literal}
 		}
-
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
 	case '-':
@@ -56,13 +56,11 @@ func (l *Lexer) NextToken() token.Token {
 	case '/':
 		tok = newToken(token.SLASH, l.ch)
 	case '!':
-		if l.getNextChar() == '=' {
-			l.nextChar()
-			tok = token.Token{Type: token.NEQ, Literal: "!="}
+		if twoChar, literal := l.twoCharToken(l.ch); twoChar {
+			tok = token.Token{Type: token.NEQ, Literal: literal}
 		} else {
-			tok = newToken(token.BANG, l.ch)
+			tok = token.Token{Type: token.BANG, Literal: literal}
 		}
-
 	case '<':
 		tok = newToken(token.LT, l.ch)
 	case '>':
@@ -135,4 +133,12 @@ func isDigit(ch byte) bool {
 
 func newToken(tokenType token.TokenType, literal byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(literal)}
+}
+
+func (l *Lexer) twoCharToken(ch byte) (bool, string) {
+	if l.getNextChar() == '=' {
+		l.nextChar()
+		return true, string(ch) + string(l.ch)
+	}
+	return false, string(ch)
 }
