@@ -7,7 +7,7 @@ import (
 type Lexer struct {
 	input        string
 	position     int
-	nextPosition int
+	peekPosition int
 	ch           byte
 }
 
@@ -18,20 +18,20 @@ func New(input string) *Lexer {
 }
 
 func (l *Lexer) nextChar() {
-	if l.nextPosition >= len(l.input) {
+	if l.peekPosition >= len(l.input) {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.nextPosition]
+		l.ch = l.input[l.peekPosition]
 	}
-	l.position = l.nextPosition
-	l.nextPosition++
+	l.position = l.peekPosition
+	l.peekPosition++
 }
 
 func (l *Lexer) getNextChar() byte {
-	if l.nextPosition >= len(l.input) {
+	if l.peekPosition >= len(l.input) {
 		return 0
 	} else {
-		return l.input[l.nextPosition]
+		return l.input[l.peekPosition]
 	}
 }
 
