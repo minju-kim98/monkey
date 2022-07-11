@@ -43,40 +43,40 @@ func (l *Lexer) NextToken() token.Token {
 	switch l.ch {
 	case '=':
 		if twoChar, literal := l.twoCharToken(l.ch); twoChar {
-			tok = token.Token{Type: token.EQ, Literal: literal}
+			tok = newTokenString(token.EQ, literal)
 		} else {
-			tok = token.Token{Type: token.ASSIGN, Literal: literal}
+			tok = newTokenString(token.ASSIGN, literal)
 		}
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tok = newTokenChar(token.PLUS, l.ch)
 	case '-':
-		tok = newToken(token.MINUS, l.ch)
+		tok = newTokenChar(token.MINUS, l.ch)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		tok = newTokenChar(token.ASTERISK, l.ch)
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		tok = newTokenChar(token.SLASH, l.ch)
 	case '!':
 		if twoChar, literal := l.twoCharToken(l.ch); twoChar {
-			tok = token.Token{Type: token.NEQ, Literal: literal}
+			tok = newTokenString(token.NEQ, literal)
 		} else {
-			tok = token.Token{Type: token.BANG, Literal: literal}
+			tok = newTokenString(token.BANG, literal)
 		}
 	case '<':
-		tok = newToken(token.LT, l.ch)
+		tok = newTokenChar(token.LT, l.ch)
 	case '>':
-		tok = newToken(token.GT, l.ch)
+		tok = newTokenChar(token.GT, l.ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		tok = newTokenChar(token.SEMICOLON, l.ch)
 	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		tok = newTokenChar(token.COMMA, l.ch)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch)
+		tok = newTokenChar(token.LPAREN, l.ch)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch)
+		tok = newTokenChar(token.RPAREN, l.ch)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tok = newTokenChar(token.LBRACE, l.ch)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tok = newTokenChar(token.RBRACE, l.ch)
 
 	case 0:
 		tok.Type = token.EOF
@@ -88,11 +88,10 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.CheckWordType(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
-			tok.Literal = l.getNum()
-			tok.Type = token.INT
+			tok = newTokenString(token.INT, l.getNum())
 			return tok
 		} else {
-			tok = newToken(token.ILLEGAL, l.ch)
+			tok = newTokenChar(token.ILLEGAL, l.ch)
 		}
 	}
 
@@ -131,8 +130,12 @@ func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
-func newToken(tokenType token.TokenType, literal byte) token.Token {
+func newTokenChar(tokenType token.TokenType, literal byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(literal)}
+}
+
+func newTokenString(tokenType token.TokenType, literal string) token.Token {
+	return token.Token{Type: tokenType, Literal: literal}
 }
 
 func (l *Lexer) twoCharToken(ch byte) (bool, string) {
