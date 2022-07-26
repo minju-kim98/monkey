@@ -47,6 +47,8 @@ func TestLetToken(t *testing.T) {
 	};
 	
 	let result = add(five, ten);
+
+	let my_test$123 = 15;
 	`
 
 	tests := []struct {
@@ -88,6 +90,11 @@ func TestLetToken(t *testing.T) {
 		{token.COMMA, ","},
 		{token.ID, "ten"},
 		{token.RPAREN, ")"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.ID, "my_test$123"},
+		{token.ASSIGN, "="},
+		{token.INT, "15"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}

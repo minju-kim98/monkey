@@ -110,7 +110,7 @@ func (l *Lexer) skipWhitespace() {
 // readIdentifier() in textbook
 func (l *Lexer) checkWord() string {
 	position := l.position
-	for isLetter(l.ch) {
+	for meetsNamingConvention(l.ch) {
 		l.nextChar()
 	}
 	return l.input[position:l.position]
@@ -149,6 +149,15 @@ func isLetter(ch byte) bool {
 // isLetter() checks if the input char is a digit
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+// meetsNamingConvention() checks if the word can be used by identifier's name
+func meetsNamingConvention(ch byte) bool {
+	check := false
+	if ch == '_' || ch == '$' {
+		check = true
+	}
+	return isLetter(ch) || isDigit(ch) || check
 }
 
 // newTokenChar() helps initialize new token which literal is char
