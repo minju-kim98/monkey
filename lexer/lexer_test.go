@@ -6,7 +6,39 @@ import (
 	"github.com/minju-kim98/monkey/token"
 )
 
-func TestMyLexer(t *testing.T) {
+func TestBasicToken(t *testing.T) {
+	input := `=+(){},;`
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.ASSIGN, "="},
+		{token.PLUS, "+"},
+		{token.LPAREN, "("},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RBRACE, "}"},
+		{token.COMMA, ","},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	l := New(input)
+
+	for i, outputType := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != outputType.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected = %q, got = %q", i, outputType.expectedType, tok.Type)
+		}
+
+		if tok.Literal != outputType.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected = %q, got = %q", i, outputType.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestLetToken(t *testing.T) {
 	input := `let five = 5;
 	let ten = 10;
 	
@@ -15,17 +47,6 @@ func TestMyLexer(t *testing.T) {
 	};
 	
 	let result = add(five, ten);
-	!-/*5;
-	5 < 10 > 5;
-	
-	if (5 < 10) {
-		return true;
-	} else {
-		return false;
-	}
-	
-	10 == 10;
-	10 != 9;
 	`
 
 	tests := []struct {
@@ -68,6 +89,33 @@ func TestMyLexer(t *testing.T) {
 		{token.ID, "ten"},
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	l := New(input)
+
+	for i, outputType := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != outputType.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected = %q, got = %q", i, outputType.expectedType, tok.Type)
+		}
+
+		if tok.Literal != outputType.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected = %q, got = %q", i, outputType.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestOneCharToken(t *testing.T) {
+	input := `	!-/*5;
+	5 < 10 > 5;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.BANG, "!"},
 		{token.MINUS, "-"},
 		{token.SLASH, "/"},
@@ -80,6 +128,36 @@ func TestMyLexer(t *testing.T) {
 		{token.GT, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	l := New(input)
+
+	for i, outputType := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != outputType.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected = %q, got = %q", i, outputType.expectedType, tok.Type)
+		}
+
+		if tok.Literal != outputType.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected = %q, got = %q", i, outputType.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestKeywordToken(t *testing.T) {
+	input := `if (5 < 10) {
+		return true;
+	} else {
+		return false;
+	}
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.IF, "if"},
 		{token.LPAREN, "("},
 		{token.INT, "5"},
@@ -97,6 +175,33 @@ func TestMyLexer(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
+		{token.EOF, ""},
+	}
+
+	l := New(input)
+
+	for i, outputType := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != outputType.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected = %q, got = %q", i, outputType.expectedType, tok.Type)
+		}
+
+		if tok.Literal != outputType.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected = %q, got = %q", i, outputType.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestTwoCharToken(t *testing.T) {
+	input := `10 == 10;
+	10 != 9;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.INT, "10"},
 		{token.EQ, "=="},
 		{token.INT, "10"},
