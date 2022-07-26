@@ -36,6 +36,7 @@ const (
 	CALL        // function call
 )
 
+// New() initiallizes the parser
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l, errors: []string{}}
 
@@ -57,19 +58,20 @@ func (p *Parser) registerInfix(tt token.TokenType, fn infixParseFn) {
 	p.infixParseFns[tt] = fn
 }
 
+// ParseProgram() is main part of parser. Parser works here!
 func (p *Parser) ParseProgram() *ast.Root {
-	root := &ast.Root{}
-	root.Statements = []ast.Statement{}
+	program := &ast.Root{}
+	program.Statements = []ast.Statement{}
 
 	for !p.currTokenTypeIs(token.EOF) {
 		stmt := p.parseStatement()
 		if stmt != nil {
-			root.Statements = append(root.Statements, stmt)
+			program.Statements = append(program.Statements, stmt)
 		}
 		p.nextToken()
 	}
 
-	return root
+	return program
 }
 
 func (p *Parser) parseStatement() ast.Statement {
@@ -96,6 +98,8 @@ func (p *Parser) parseLetStmt() *ast.LetStatement {
 		return nil
 	}
 
+	//TODO: proceed Expression
+
 	for !p.currTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
 	}
@@ -107,6 +111,8 @@ func (p *Parser) parseReturnStmt() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.currToken}
 
 	p.nextToken()
+
+	//TODO: proceed Expression
 
 	for !p.currTokenTypeIs(token.SEMICOLON) {
 		p.nextToken()
@@ -154,6 +160,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return lit
 }
 
+// nextToken() moves current position to next position
 func (p *Parser) nextToken() {
 	p.currToken = p.peekToken
 	p.peekToken = p.l.NextToken()
