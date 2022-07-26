@@ -11,12 +11,6 @@ type Lexer struct {
 	ch           byte
 }
 
-func New(input string) *Lexer {
-	l := &Lexer{input: input}
-	l.nextChar()
-	return l
-}
-
 func (l *Lexer) nextChar() {
 	if l.peekPosition >= len(l.input) {
 		l.ch = 0
@@ -122,6 +116,20 @@ func (l *Lexer) getNum() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) twoCharToken(ch byte) (bool, string) {
+	if l.getNextChar() == '=' {
+		l.nextChar()
+		return true, string(ch) + string(l.ch)
+	}
+	return false, string(ch)
+}
+
+func New(input string) *Lexer {
+	l := &Lexer{input: input}
+	l.nextChar()
+	return l
+}
+
 func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
 }
@@ -136,12 +144,4 @@ func newTokenChar(tokenType token.TokenType, literal byte) token.Token {
 
 func newTokenString(tokenType token.TokenType, literal string) token.Token {
 	return token.Token{Type: tokenType, Literal: literal}
-}
-
-func (l *Lexer) twoCharToken(ch byte) (bool, string) {
-	if l.getNextChar() == '=' {
-		l.nextChar()
-		return true, string(ch) + string(l.ch)
-	}
-	return false, string(ch)
 }
