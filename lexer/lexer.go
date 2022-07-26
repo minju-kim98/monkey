@@ -11,6 +11,8 @@ type Lexer struct {
 	ch           byte
 }
 
+// nextChar() moves current position to next position
+// readChar() in textbook
 func (l *Lexer) nextChar() {
 	if l.peekPosition >= len(l.input) {
 		l.ch = 0
@@ -21,6 +23,8 @@ func (l *Lexer) nextChar() {
 	l.peekPosition++
 }
 
+// getNextChar() gets value of next char
+// peakChar() in textbook
 func (l *Lexer) getNextChar() byte {
 	if l.peekPosition >= len(l.input) {
 		return 0
@@ -29,6 +33,7 @@ func (l *Lexer) getNextChar() byte {
 	}
 }
 
+// NextToken() changes input to token
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -94,12 +99,15 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// skipWhiteSpace() helps get through white spaces
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.nextChar()
 	}
 }
 
+// checkWord() reads entire identifier/keyword name
+// readIdentifier() in textbook
 func (l *Lexer) checkWord() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -108,6 +116,7 @@ func (l *Lexer) checkWord() string {
 	return l.input[position:l.position]
 }
 
+// getNum() reads entire number
 func (l *Lexer) getNum() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -116,6 +125,7 @@ func (l *Lexer) getNum() string {
 	return l.input[position:l.position]
 }
 
+// twoCharToken() helps proceed token with two characters
 func (l *Lexer) twoCharToken(ch byte) (bool, string) {
 	if l.getNextChar() == '=' {
 		l.nextChar()
@@ -124,24 +134,29 @@ func (l *Lexer) twoCharToken(ch byte) (bool, string) {
 	return false, string(ch)
 }
 
+// New() initializes the Lexer
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.nextChar()
 	return l
 }
 
+// isLetter() checks if the input char is an letter
 func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
 }
 
+// isLetter() checks if the input char is a digit
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
+// newTokenChar() helps initialize new token which literal is char
 func newTokenChar(tokenType token.TokenType, literal byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(literal)}
 }
 
+// newTokenChar() helps initialize new token which literal is string
 func newTokenString(tokenType token.TokenType, literal string) token.Token {
 	return token.Token{Type: tokenType, Literal: literal}
 }

@@ -58,6 +58,8 @@ var keywords = map[string]TokenType{
 	"false":  FALSE,
 }
 
+// CheckWordType() checks if the word is identifier or keyword
+// LookUpIdent() in textbook
 func CheckWordType(word string) TokenType {
 	if tok, kw := keywords[word]; kw {
 		return tok
